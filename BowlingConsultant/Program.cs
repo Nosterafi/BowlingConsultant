@@ -14,10 +14,6 @@ namespace BowlingConsultant
 {
     class Program
     {
-        private static ITelegramBotClient _botClient;
-
-        private static ReceiverOptions _receiverOptions;
-
         static async Task Main(string[] args)
         {
             var token = "6623750163:AAFk0OFe8QIwpqVEPTVCxbJWWL1u9vOsl_Y";
