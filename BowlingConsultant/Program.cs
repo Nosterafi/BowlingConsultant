@@ -14,32 +14,34 @@ namespace BowlingConsultant
 {
     class Program
     {
-        private static ITelegramBotClient _botClient;
-
-        private static ReceiverOptions _receiverOptions;
-
+        //Точка начала выполнения программы.
         static async Task Main(string[] args)
         {
             var token = "6623750163:AAFk0OFe8QIwpqVEPTVCxbJWWL1u9vOsl_Y";
             var _botClient = new TelegramBotClient(token);
             var _receiverOptions = new ReceiverOptions
             {
-                AllowedUpdates = new[]{ UpdateType.Message, UpdateType.CallbackQuery },
+                AllowedUpdates = new[]{ UpdateType.Message },
                 ThrowPendingUpdates = true,
             };
             using var cts = new CancellationTokenSource();
             _botClient.StartReceiving(UpdateHandler, ErrorHandler, _receiverOptions, cts.Token);
             var me = await _botClient.GetMeAsync();
-            Console.WriteLine($"{me.FirstName} запущен!");
+            Console.WriteLine($"{me.FirstName} started");
             await Task.Delay(-1);
         }
 
+        //Обработчик сообщений пользователей.
         private static async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             try
             {
                 var message = update.Message;
-                await Answers.AnswersToMessages[message.Text](botClient, message.Chat);
+                var chat=message.Chat;
+                //Вызов метода для отправки ответа пользователю.
+                //Для удобства методы храняться в словаре Ancwers.AnswersToMessages.
+                if (message.Text != "/start") await botClient.SendTextMessageAsync(chat.Id, message.Text);
+                await Answers.AnswersToMessages[message.Text](botClient, chat);
             }
             catch (Exception ex)
             {
@@ -47,6 +49,7 @@ namespace BowlingConsultant
             }
         }
 
+        //Обработчик ошибок, связанных с Bot API.
         private static Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)
         {
             var ErrorMessage = error switch
