@@ -22,6 +22,7 @@ namespace BowlingConsultant
         //Клавиатура, с помощью которой пользователь получает информацию.
         public readonly static ReplyKeyboardMarkup KeyBoard;
 
+        //Статический конструктор.
         static Answers()
         {
             AnswersToMessages = new Dictionary<string, Func<ITelegramBotClient, Chat, Task>>
@@ -47,6 +48,7 @@ namespace BowlingConsultant
             { ResizeKeyboard = true };
         }
 
+        //Реакция на стартовое сообщение.
         private async static Task AnswerToStart(ITelegramBotClient botClient, Chat chat)
         {
             var me = await botClient.GetMeAsync();
@@ -54,8 +56,11 @@ namespace BowlingConsultant
             await botClient.SendTextMessageAsync(chat.Id, $"Привет, я бот {name}.\nЧто вас интерисует", replyMarkup: KeyBoard);
         }
 
+        //Реакция на просьбу пользователя показать меню.
         private async static Task AnswerToMenu(ITelegramBotClient botClient, Chat chat)
         {
+            //Данные о меню боулинг-центра храниться в файле Menu.txt. 
+            //Данный файл расположен в папке User data, находящейся в директории проекта.
             var text = System.IO.File.ReadAllText("D:\\BowlingConsultant\\BowlingConsultant\\User data\\Menu.txt");
             await botClient.SendTextMessageAsync(chat.Id, text, replyMarkup: KeyBoard);
         }
