@@ -60,10 +60,11 @@ namespace BowlingConsultant
         private async static Task AnswerToMenu(ITelegramBotClient botClient, Chat chat)
         {
             //Данные о меню боулинг-центра храниться в файле Menu.txt. 
-            //Данный файл расположен в папке User data, находящейся в директории проекта.
+            //Данный файл расположен в папке User data, находящейся в одной
+            //директории с exe файлом.
             var text = System.IO.File.ReadAllText("User data\\Menu.txt");
             Console.WriteLine(Environment.CurrentDirectory);
-            await botClient.SendTextMessageAsync(chat.Id, text, replyMarkup: KeyBoard);
+            await botClient.SendTextMessageAsync(chat.Id, $"{text}\n\nКакую информацию вы ещё хотели бы получить?", replyMarkup: KeyBoard);
         }
     }
 }
