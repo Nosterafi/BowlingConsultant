@@ -28,7 +28,8 @@ namespace BowlingConsultant
             AnswersToMessages = new Dictionary<string, Func<ITelegramBotClient, Chat, Task>>
             {
                 {"/start", AnswerToStart},
-                {"Меню" , AnswerToMenu }
+                {"Меню" , AnswerToMenu },
+                {"Режим работы", AnswerToShedule }
             };
             KeyBoard = new ReplyKeyboardMarkup(
             new KeyboardButton[][]
@@ -63,7 +64,12 @@ namespace BowlingConsultant
             //Данный файл расположен в папке User data, находящейся в одной
             //директории с exe файлом.
             var text = System.IO.File.ReadAllText("User data\\Menu.txt");
-            Console.WriteLine(Environment.CurrentDirectory);
+            await botClient.SendTextMessageAsync(chat.Id, $"{text}\n\nКакую информацию вы ещё хотели бы получить?", replyMarkup: KeyBoard);
+        }
+
+        private async static Task AnswerToShedule(ITelegramBotClient botClient, Chat chat)
+        {
+            var text = System.IO.File.ReadAllText("User data\\Shedule.txt");
             await botClient.SendTextMessageAsync(chat.Id, $"{text}\n\nКакую информацию вы ещё хотели бы получить?", replyMarkup: KeyBoard);
         }
     }
