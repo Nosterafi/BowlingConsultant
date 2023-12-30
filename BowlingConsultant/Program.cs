@@ -40,8 +40,13 @@ namespace BowlingConsultant
                 var chat=message.Chat;
                 //Вызов метода для отправки ответа пользователю.
                 //Для удобства методы храняться в словаре Ancwers.AnswersToMessages.
-                if (message.Text != "/start") await botClient.SendTextMessageAsync(chat.Id, message.Text);
-                await Answers.AnswersToMessages[message.Text](botClient, chat);
+                if (message.Text == "/start") await Answers.AnswerToStart(botClient, chat);
+                else
+                {
+                    var pathToInfo = Answers.PathsToAnswersInfo[message.Text];
+                    await Answers.SendAnswer(botClient, chat, pathToInfo);
+                }
+
             }
             catch (Exception ex)
             {

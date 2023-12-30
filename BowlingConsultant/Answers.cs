@@ -17,7 +17,7 @@ namespace BowlingConsultant
     {
         //Словарь с методами, отправляющими ответы пльзователю.
         //Ключ - текст сообщения, отправленного боту. Значение - метод для ответа на конкретное сообщение.
-        public readonly static Dictionary<string, Func<ITelegramBotClient, Chat, Task>> AnswersToMessages;
+        public readonly static Dictionary<string, string> PathsToAnswersInfo;
 
         //Клавиатура, с помощью которой пользователь получает информацию.
         public readonly static ReplyKeyboardMarkup KeyBoard;
@@ -25,11 +25,10 @@ namespace BowlingConsultant
         //Статический конструктор.
         static Answers()
         {
-            AnswersToMessages = new Dictionary<string, Func<ITelegramBotClient, Chat, Task>>
+            PathsToAnswersInfo = new Dictionary<string, string>
             {
-                {"/start", AnswerToStart},
-                {"Меню" , AnswerToMenu },
-                {"Режим работы", AnswerToShedule }
+                {"Меню" , "User data\\Menu.txt" },
+                {"Режим работы", "User data\\Menu.txt" }
             };
             KeyBoard = new ReplyKeyboardMarkup(
             new KeyboardButton[][]
@@ -50,27 +49,16 @@ namespace BowlingConsultant
         }
 
         //Реакция на стартовое сообщение.
-        private async static Task AnswerToStart(ITelegramBotClient botClient, Chat chat)
+        public async static Task AnswerToStart(ITelegramBotClient botClient, Chat chat)
         {
             var me = await botClient.GetMeAsync();
             var name = me.FirstName;
             await botClient.SendTextMessageAsync(chat.Id, $"Привет, я бот {name}.\nЧто вас интерисует", replyMarkup: KeyBoard);
         }
 
-        //Реакция на просьбу пользователя показать меню.
-        private async static Task AnswerToMenu(ITelegramBotClient botClient, Chat chat)
+        public async static Task SendAnswer(ITelegramBotClient botClient, Chat chat, string pathToInfo)
         {
-            //Данные о меню боулинг-центра храниться в файле Menu.txt. 
-            //Данный файл расположен в папке User data, находящейся в одной
-            //директории с exe файлом.
-            var text = System.IO.File.ReadAllText("User data\\Menu.txt");
-            await botClient.SendTextMessageAsync(chat.Id, $"{text}\n\nКакую информацию вы ещё хотели бы получить?", replyMarkup: KeyBoard);
-        }
-
-        //Реакция на просьбу пользователя показать режим работы.
-        private async static Task AnswerToShedule(ITelegramBotClient botClient, Chat chat)
-        {
-            var text = System.IO.File.ReadAllText("User data\\Shedule.txt");
+            var text= System.IO.File.ReadAllText(pathToInfo);
             await botClient.SendTextMessageAsync(chat.Id, $"{text}\n\nКакую информацию вы ещё хотели бы получить?", replyMarkup: KeyBoard);
         }
     }
