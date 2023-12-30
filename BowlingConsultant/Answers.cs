@@ -61,7 +61,8 @@ namespace BowlingConsultant
         {
             //Данные о меню боулинг-центра храниться в файле Menu.txt. 
             //Данный файл расположен в папке User data, находящейся в директории проекта.
-            var text = System.IO.File.ReadAllText("D:\\BowlingConsultant\\BowlingConsultant\\User data\\Menu.txt");
+            var text = System.IO.File.ReadAllText("User data\\Menu.txt");
+            Console.WriteLine(Environment.CurrentDirectory);
             await botClient.SendTextMessageAsync(chat.Id, text, replyMarkup: KeyBoard);
         }
     }
