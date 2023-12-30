@@ -26,7 +26,7 @@ namespace BowlingConsultant
             using var cts = new CancellationTokenSource();
             _botClient.StartReceiving(UpdateHandler, ErrorHandler, _receiverOptions, cts.Token);
             var me = await _botClient.GetMeAsync();
-            Console.WriteLine($"{me.FirstName} запущен!");
+            Console.WriteLine($"{me.FirstName} started");
             await Task.Delay(-1);
         }
 

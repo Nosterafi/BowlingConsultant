@@ -27,7 +27,23 @@ namespace BowlingConsultant
         {
             var me = await botClient.GetMeAsync();
             var name = me.FirstName;
-            await botClient.SendTextMessageAsync(chat.Id, $"Привет, я бот {name}.\nЧто вас интерисует");
+            var buttons = new ReplyKeyboardMarkup(
+            new KeyboardButton[][]
+            {
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Меню"),
+                    new KeyboardButton("Режим работы")
+                },
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Что у нас есть?"),
+                    new KeyboardButton("Наши контакты")
+
+                }
+            })
+            { ResizeKeyboard = true };
+            await botClient.SendTextMessageAsync(chat.Id, $"Привет, я бот {name}.\nЧто вас интерисует", replyMarkup: buttons);
         }
     }
 }
