@@ -14,13 +14,14 @@ namespace BowlingConsultant
 {
     class Program
     {
+        //Точка начала выполнения программы.
         static async Task Main(string[] args)
         {
             var token = "6623750163:AAFk0OFe8QIwpqVEPTVCxbJWWL1u9vOsl_Y";
             var _botClient = new TelegramBotClient(token);
             var _receiverOptions = new ReceiverOptions
             {
-                AllowedUpdates = new[]{ UpdateType.Message, UpdateType.CallbackQuery },
+                AllowedUpdates = new[]{ UpdateType.Message },
                 ThrowPendingUpdates = true,
             };
             using var cts = new CancellationTokenSource();
@@ -30,11 +31,14 @@ namespace BowlingConsultant
             await Task.Delay(-1);
         }
 
+        //Обработчик сообщений пользователей.
         private static async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             try
             {
                 var message = update.Message;
+                //Вызов метода для отправки ответа пользователю.
+                //Для удобства методы храняться в словаре Ancwers.AnswersToMessages.
                 await Answers.AnswersToMessages[message.Text](botClient, message.Chat);
             }
             catch (Exception ex)
@@ -43,6 +47,7 @@ namespace BowlingConsultant
             }
         }
 
+        //Обработчик ошибок, связанных с Bot API.
         private static Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)
         {
             var ErrorMessage = error switch

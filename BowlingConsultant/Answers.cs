@@ -11,8 +11,11 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace BowlingConsultant
 {
+    //Класс, в котором реализована логика ответов на сообщения пользователя.
     public static class Answers
     {
+        //Словарь с методами, отправляющими ответы пльзователю.
+        //Ключ - текст сообщения, отправленного боту. Значение - метод для ответа на конкретное сообщение.
         public readonly static Dictionary<string, Func<ITelegramBotClient, Chat, Task>> AnswersToMessages;
 
         static Answers()
