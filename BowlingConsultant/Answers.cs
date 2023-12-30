@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -18,19 +19,17 @@ namespace BowlingConsultant
         //Ключ - текст сообщения, отправленного боту. Значение - метод для ответа на конкретное сообщение.
         public readonly static Dictionary<string, Func<ITelegramBotClient, Chat, Task>> AnswersToMessages;
 
+        //Клавиатура, с помощью которой пользователь получает информацию.
+        public readonly static ReplyKeyboardMarkup KeyBoard;
+
         static Answers()
         {
             AnswersToMessages = new Dictionary<string, Func<ITelegramBotClient, Chat, Task>>
             {
-                {"/start", AnswerToStart}
+                {"/start", AnswerToStart},
+                {"Меню" , AnswerToMenu }
             };
-        }
-
-        private async static Task AnswerToStart(ITelegramBotClient botClient, Chat chat)
-        {
-            var me = await botClient.GetMeAsync();
-            var name = me.FirstName;
-            var buttons = new ReplyKeyboardMarkup(
+            KeyBoard = new ReplyKeyboardMarkup(
             new KeyboardButton[][]
             {
                 new KeyboardButton[]
@@ -46,7 +45,19 @@ namespace BowlingConsultant
                 }
             })
             { ResizeKeyboard = true };
-            await botClient.SendTextMessageAsync(chat.Id, $"Привет, я бот {name}.\nЧто вас интерисует", replyMarkup: buttons);
+        }
+
+        private async static Task AnswerToStart(ITelegramBotClient botClient, Chat chat)
+        {
+            var me = await botClient.GetMeAsync();
+            var name = me.FirstName;
+            await botClient.SendTextMessageAsync(chat.Id, $"Привет, я бот {name}.\nЧто вас интерисует", replyMarkup: KeyBoard);
+        }
+
+        private async static Task AnswerToMenu(ITelegramBotClient botClient, Chat chat)
+        {
+            var text = System.IO.File.ReadAllText("D:\\BowlingConsultant\\BowlingConsultant\\User data\\Menu.txt");
+            await botClient.SendTextMessageAsync(chat.Id, text, replyMarkup: KeyBoard);
         }
     }
 }
