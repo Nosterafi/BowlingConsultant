@@ -67,6 +67,7 @@ namespace BowlingConsultant
             await botClient.SendTextMessageAsync(chat.Id, $"{text}\n\nКакую информацию вы ещё хотели бы получить?", replyMarkup: KeyBoard);
         }
 
+        //Реакция на просьбу пользователя показать режим работы.
         private async static Task AnswerToShedule(ITelegramBotClient botClient, Chat chat)
         {
             var text = System.IO.File.ReadAllText("User data\\Shedule.txt");
