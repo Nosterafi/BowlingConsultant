@@ -15,11 +15,12 @@ namespace BowlingConsultant
     //Класс, в котором реализована логика ответов на сообщения пользователя.
     public static class Answers
     {
-        //Словарь с методами, отправляющими ответы пльзователю.
-        //Ключ - текст сообщения, отправленного боту. Значение - метод для ответа на конкретное сообщение.
+        //Словарь, с путями к файлам с информацией для пользователей.
+        //Ключи - тексты сообщений, для ответов на которые нужна информация
+        //из конкретного файла.
         public readonly static Dictionary<string, string> PathsToAnswersInfo;
 
-        //Клавиатура, с помощью которой пользователь получает информацию.
+        //Клавиатура, с помощью которой пользователь общается с ботом.
         public readonly static ReplyKeyboardMarkup KeyBoard;
 
         //Статический конструктор.
@@ -28,7 +29,7 @@ namespace BowlingConsultant
             PathsToAnswersInfo = new Dictionary<string, string>
             {
                 {"Меню" , "User data\\Menu.txt" },
-                {"Режим работы", "User data\\Menu.txt" }
+                {"Режим работы", "User data\\Shedule.txt" }
             };
             KeyBoard = new ReplyKeyboardMarkup(
             new KeyboardButton[][]
@@ -56,6 +57,8 @@ namespace BowlingConsultant
             await botClient.SendTextMessageAsync(chat.Id, $"Привет, я бот {name}.\nЧто вас интерисует", replyMarkup: KeyBoard);
         }
 
+        //Реакция на все остальные сообщения. Текст ответа зависит от 
+        //текста в файле, к которому ведёт путь pathToInfo.
         public async static Task SendAnswer(ITelegramBotClient botClient, Chat chat, string pathToInfo)
         {
             var text= System.IO.File.ReadAllText(pathToInfo);

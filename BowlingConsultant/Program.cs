@@ -38,9 +38,10 @@ namespace BowlingConsultant
             {
                 var message = update.Message;
                 var chat=message.Chat;
-                //Вызов метода для отправки ответа пользователю.
-                //Для удобства методы храняться в словаре Ancwers.AnswersToMessages.
+                //Если бот получил стартовое сообщение, то запускаем реакцию на него.
                 if (message.Text == "/start") await Answers.AnswerToStart(botClient, chat);
+                //Иначе дублируем полученное сообщение и отправляем ответ в зависимости от 
+                //полученного текста.
                 else
                 {
                     var pathToInfo = Answers.PathsToAnswersInfo[message.Text];
