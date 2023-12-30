@@ -11,8 +11,11 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace BowlingConsultant
 {
+    //Класс, в котором реализована логика ответов на сообщения пользователя.
     public static class Answers
     {
+        //Словарь с методами, отправляющими ответы пльзователю.
+        //Ключ - текст сообщения, отправленного боту. Значение - метод для ответа на конкретное сообщение.
         public readonly static Dictionary<string, Func<ITelegramBotClient, Chat, Task>> AnswersToMessages;
 
         static Answers()
@@ -27,7 +30,23 @@ namespace BowlingConsultant
         {
             var me = await botClient.GetMeAsync();
             var name = me.FirstName;
-            await botClient.SendTextMessageAsync(chat.Id, $"Привет, я бот {name}.\nЧто вас интерисует");
+            var buttons = new ReplyKeyboardMarkup(
+            new KeyboardButton[][]
+            {
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Меню"),
+                    new KeyboardButton("Режим работы")
+                },
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Что у нас есть?"),
+                    new KeyboardButton("Наши контакты")
+
+                }
+            })
+            { ResizeKeyboard = true };
+            await botClient.SendTextMessageAsync(chat.Id, $"Привет, я бот {name}.\nЧто вас интерисует", replyMarkup: buttons);
         }
     }
 }
