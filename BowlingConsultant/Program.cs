@@ -44,6 +44,7 @@ namespace BowlingConsultant
                 //полученного текста.
                 else
                 {
+                    await botClient.SendTextMessageAsync(chat.Id, message.Text);
                     var pathToInfo = Answers.PathsToAnswersInfo[message.Text];
                     await Answers.SendAnswer(botClient, chat, pathToInfo);
                 }
