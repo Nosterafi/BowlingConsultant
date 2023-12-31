@@ -30,7 +30,9 @@ namespace BowlingConsultant
             {
                 {"Меню" , "User data\\Menu.txt" },
                 {"Режим работы", "User data\\Shedule.txt" },
-                {"Что у вас есть?", "User data\\Description.txt"}
+                {"Что у вас есть?", "User data\\Description.txt"},
+                {"Как с вами связаться?", "User data\\Contacts.txt"}
+
             };
             KeyBoard = new ReplyKeyboardMarkup(
             new KeyboardButton[][]
@@ -43,7 +45,7 @@ namespace BowlingConsultant
                 new KeyboardButton[]
                 {
                     new KeyboardButton("Что у вас есть?"),
-                    new KeyboardButton("Наши контакты")
+                    new KeyboardButton("Как с вами связаться?")
 
                 }
             })
