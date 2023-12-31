@@ -29,7 +29,8 @@ namespace BowlingConsultant
             PathsToAnswersInfo = new Dictionary<string, string>
             {
                 {"Меню" , "User data\\Menu.txt" },
-                {"Режим работы", "User data\\Shedule.txt" }
+                {"Режим работы", "User data\\Shedule.txt" },
+                {"Что у вас есть?", "User data\\Description.txt"}
             };
             KeyBoard = new ReplyKeyboardMarkup(
             new KeyboardButton[][]
@@ -41,7 +42,7 @@ namespace BowlingConsultant
                 },
                 new KeyboardButton[]
                 {
-                    new KeyboardButton("Что у нас есть?"),
+                    new KeyboardButton("Что у вас есть?"),
                     new KeyboardButton("Наши контакты")
 
                 }
