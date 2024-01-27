@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using BowlingConsultant.CommandManager;
+using BowlingConsultant.Configuration;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +16,10 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace BowlingConsultant
 {
-    internal class Program
+    class Program
     {
+        public static MessageReceiver MessageReceiver { get; set; }
+
         static async Task Main(string[] args)
         {
             var config = new ConfigurationBuilder()
@@ -25,6 +29,14 @@ namespace BowlingConsultant
 
             Configurathion.SetProperities(config);
             var _botClient = new TelegramBotClient(Configurathion.TelegramSettings.BotToken);
+
+            var replySender = new ReplySender(_botClient);
+            var menuCommand = new MenuCommand(replySender);
+            var contactsCommand = new ContactsCommand(replySender);
+            MessageReceiver = new MessageReceiver();
+
+            MessageReceiver.SetCommand("Меню", menuCommand);
+            MessageReceiver.SetCommand("Контакты", contactsCommand);
 
             var _receiverOptions = new ReceiverOptions
             {
@@ -54,6 +66,7 @@ namespace BowlingConsultant
             }
 
             await botClient.SendTextMessageAsync(message.Chat, message.Text);
+            await MessageReceiver.SendAnswer(message.Text, message.Chat);
         }
 
         private static Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)

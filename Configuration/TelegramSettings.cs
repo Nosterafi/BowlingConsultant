@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BowlingConsultant
+namespace BowlingConsultant.Configuration
 {
     public class TelegramSettings
     {
