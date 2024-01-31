@@ -14,7 +14,7 @@ namespace BowlingConsultant.CommandManager
 
     public abstract class Command
     {
-        protected ReplySender Invocker {  get; set; }
+        protected ReplySender Invocker { get; set; }
 
         public Command(ReplySender invocker)
         {
@@ -36,19 +36,29 @@ namespace BowlingConsultant.CommandManager
     {
         public MenuCommand(ReplySender invocker) : base(invocker) { }
 
-        public async Task Execute(Chat chat) 
+        public async Task Execute(Chat chat)
         {
             await Invocker.SendMenu(chat);
         }
     }
 
-    public class ContactsCommand : Command, ICommand 
+    public class ContactsCommand : Command, ICommand
     {
         public ContactsCommand(ReplySender invocker) : base(invocker) { }
 
         public async Task Execute(Chat chat)
         {
             await Invocker.SendContacts(chat);
+        }
+    }
+
+    public class InvalidCommand : Command, ICommand
+    {
+        public InvalidCommand(ReplySender invocker) : base(invocker) { }
+
+        public async Task Execute(Chat chat)
+        {
+            await Invocker.SendUnintendedMessage(chat);
         }
     }
 }

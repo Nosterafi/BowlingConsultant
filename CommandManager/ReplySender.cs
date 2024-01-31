@@ -33,5 +33,11 @@ namespace BowlingConsultant.CommandManager
         {
             await BotClient.SendTextMessageAsync(chat, ReadAllText("User data\\Contacts.txt"));
         }
+
+        public async Task SendUnintendedMessage(Chat chat)
+        {
+            await BotClient.SendTextMessageAsync(chat, "К сожалению с этим я не могу помочь. " +
+                "Проверьте правильность написания команды или обратитесь в службу поддержки.");
+        }
     }
 }

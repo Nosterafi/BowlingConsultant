@@ -34,6 +34,7 @@ namespace BowlingConsultant
             messageReceiver.SetCommand("/start", new StartCommand(replySender));
             messageReceiver.SetCommand("Меню", new MenuCommand(replySender));
             messageReceiver.SetCommand("Контакты", new ContactsCommand(replySender));
+            messageReceiver.SetCommand("Непредусмотренная команда", new InvalidCommand(replySender));
 
             var _receiverOptions = new ReceiverOptions
             {

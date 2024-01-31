@@ -23,6 +23,7 @@ namespace BowlingConsultant.CommandManager
         {
             if(Commands.ContainsKey(messageText))
                 await Commands[messageText].Execute(chat);
+            else await Commands["Непредусмотренная команда"].Execute(chat);
         }
     }
 }
