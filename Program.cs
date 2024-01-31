@@ -1,5 +1,6 @@
 ﻿using BowlingConsultant.CommandManager;
 using BowlingConsultant.Configuration;
+using BowlingConsultant.BeginingWork;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -18,8 +19,6 @@ namespace BowlingConsultant
 {
     class Program
     {
-        public static MessageReceiver MessageReceiver { get; set; }
-
         static async Task Main(string[] args)
         {
             var config = new ConfigurationBuilder()
@@ -30,13 +29,11 @@ namespace BowlingConsultant
             Configurathion.SetProperities(config);
             var _botClient = new TelegramBotClient(Configurathion.TelegramSettings.BotToken);
 
+            var messageReceiver = new MessageReceiver();
             var replySender = new ReplySender(_botClient);
-            var menuCommand = new MenuCommand(replySender);
-            var contactsCommand = new ContactsCommand(replySender);
-            MessageReceiver = new MessageReceiver();
-
-            MessageReceiver.SetCommand("Меню", menuCommand);
-            MessageReceiver.SetCommand("Контакты", contactsCommand);
+            messageReceiver.SetCommand("/start", new StartCommand(replySender));
+            messageReceiver.SetCommand("Меню", new MenuCommand(replySender));
+            messageReceiver.SetCommand("Контакты", new ContactsCommand(replySender));
 
             var _receiverOptions = new ReceiverOptions
             {
@@ -45,34 +42,12 @@ namespace BowlingConsultant
             };
             var cts = new CancellationTokenSource();
 
-            _botClient.StartReceiving(UpdateHandler, ErrorHandler, _receiverOptions, cts.Token);
-            var me = await _botClient.GetMeAsync();
+            var activator = new BotActivator(messageReceiver);
+            activator.Start(_botClient, _receiverOptions, cts.Token);
 
+            var me = await _botClient.GetMeAsync();
             Console.WriteLine($"{me.FirstName} started");
             Console.ReadLine();
-        }
-
-        private static async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
-        {
-            if (update.Type != UpdateType.Message) 
-                return;
-
-            var message = update.Message;
-
-            if (message.Text == "/start")
-            {
-                await botClient.SendTextMessageAsync(message.Chat, "Привет. Что вас интерисует?");
-                return;
-            }
-
-            await botClient.SendTextMessageAsync(message.Chat, message.Text);
-            await MessageReceiver.SendAnswer(message.Text, message.Chat);
-        }
-
-        private static Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)
-        {
-            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(error));
-            return Task.CompletedTask;
         }
     }
 }

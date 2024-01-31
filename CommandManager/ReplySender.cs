@@ -12,11 +12,16 @@ namespace BowlingConsultant.CommandManager
 {
     public class ReplySender
     {
-        public TelegramBotClient BotClient { get; set; }
+        private ITelegramBotClient BotClient { get; set; }
 
-        public ReplySender(TelegramBotClient botClient)
+        public ReplySender(ITelegramBotClient botClient)
         {
             BotClient = botClient;
+        }
+
+        public async Task SendStart(Chat chat)
+        {
+            await BotClient.SendTextMessageAsync(chat, "Привет. Чем я могу помочь?");
         }
 
         public async Task SendMenu(Chat chat)

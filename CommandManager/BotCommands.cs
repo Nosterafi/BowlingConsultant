@@ -7,19 +7,34 @@ using Telegram.Bot.Types;
 
 namespace BowlingConsultant.CommandManager
 {
-    public interface IBotCommands
+    public interface ICommand
     {
         public Task Execute(Chat chat);
     }
 
-    public class MenuCommand : IBotCommands
+    public abstract class Command
     {
-        public ReplySender Invocker {  get; set; }
+        protected ReplySender Invocker {  get; set; }
 
-        public MenuCommand(ReplySender invocker)
+        public Command(ReplySender invocker)
         {
             Invocker = invocker;
         }
+    }
+
+    public class StartCommand : Command, ICommand
+    {
+        public StartCommand(ReplySender invocker) : base(invocker) { }
+
+        public async Task Execute(Chat chat)
+        {
+            await Invocker.SendStart(chat);
+        }
+    }
+
+    public class MenuCommand : Command, ICommand
+    {
+        public MenuCommand(ReplySender invocker) : base(invocker) { }
 
         public async Task Execute(Chat chat) 
         {
@@ -27,14 +42,9 @@ namespace BowlingConsultant.CommandManager
         }
     }
 
-    public class ContactsCommand : IBotCommands 
+    public class ContactsCommand : Command, ICommand 
     {
-        public ReplySender Invocker { get; set; }
-
-        public ContactsCommand(ReplySender invocker)
-        {
-            Invocker = invocker;
-        }
+        public ContactsCommand(ReplySender invocker) : base(invocker) { }
 
         public async Task Execute(Chat chat)
         {

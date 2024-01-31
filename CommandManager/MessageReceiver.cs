@@ -11,14 +11,10 @@ namespace BowlingConsultant.CommandManager
 {
     public class MessageReceiver
     {
-        public Dictionary<string, IBotCommands> Commands {  get; private set; }
+        private Dictionary<string, ICommand> Commands {  get; set; } = 
+            new Dictionary<string, ICommand>();
 
-        public MessageReceiver() 
-        {
-            Commands = new Dictionary<string, IBotCommands>();
-        }
-
-        public void SetCommand(string messageText, IBotCommands command)
+        public void SetCommand(string messageText, ICommand command)
         {
             Commands[messageText] = command;
         }
