@@ -27,26 +27,10 @@ namespace BowlingConsultant
                 .Build();
 
             Configurathion.SetProperities(config);
-            var _botClient = new TelegramBotClient(Configurathion.TelegramSettings.BotToken);
 
-            var messageReceiver = new MessageReceiver();
-            var replySender = new ReplySender(_botClient);
-            messageReceiver.SetCommand("/start", new StartCommand(replySender));
-            messageReceiver.SetCommand("Меню", new MenuCommand(replySender));
-            messageReceiver.SetCommand("Контакты", new ContactsCommand(replySender));
-            messageReceiver.SetCommand("Непредусмотренная команда", new InvalidCommand(replySender));
-
-            var _receiverOptions = new ReceiverOptions
-            {
-                AllowedUpdates = { },
-                ThrowPendingUpdates = true,
-            };
-            var cts = new CancellationTokenSource();
-
-            var activator = new BotActivator(messageReceiver);
-            activator.Start(_botClient, _receiverOptions, cts.Token);
-
-            var me = await _botClient.GetMeAsync();
+            var activator = new BotActivator();
+            activator.Start();
+            var me = await activator.BotClient.GetMeAsync();
             Console.WriteLine($"{me.FirstName} started");
             Console.ReadLine();
         }

@@ -11,7 +11,7 @@ namespace BowlingConsultant.CommandManager
 {
     public class MessageReceiver
     {
-        private Dictionary<string, ICommand> Commands {  get; set; } = 
+        private Dictionary<string, ICommand> Commands { get; set; } =
             new Dictionary<string, ICommand>();
 
         public void SetCommand(string messageText, ICommand command)
