@@ -1,19 +1,10 @@
 ﻿using BowlingConsultant.CommandManager;
 using BowlingConsultant.Configuration;
-using BowlingConsultant.BeginingWork;
+using BowlingConsultant.BotWorker;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Telegram.Bot;
-using Telegram.Bot.Exceptions;
-using Telegram.Bot.Polling;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace BowlingConsultant
 {
@@ -28,8 +19,9 @@ namespace BowlingConsultant
 
             Configurathion.SetProperities(config);
 
-            var activator = new BotActivator();
+            var activator = new BotWorker.BotWorker();
             activator.Start();
+
             var me = await activator.BotClient.GetMeAsync();
             Console.WriteLine($"{me.FirstName} started");
             Console.ReadLine();

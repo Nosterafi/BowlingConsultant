@@ -8,9 +8,9 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Polling;
 using BowlingConsultant.Configuration;
 
-namespace BowlingConsultant.BeginingWork
+namespace BowlingConsultant.BotWorker
 {
-    public class BotActivator
+    public class BotWorker
     {
         private readonly string _botToken;
 
@@ -24,11 +24,13 @@ namespace BowlingConsultant.BeginingWork
 
         private ReceiverOptions _receiverOptions;
 
-        public BotActivator()
+        public BotWorker()
         {
             _botToken = Configurathion.TelegramSettings.BotToken;
+
             if(_botToken == null && _botToken == string.Empty)
                 throw new NullReferenceException("Invalid token");
+
             BotClient = new TelegramBotClient(_botToken);
 
             _messageReceiver = new MessageReceiver();
@@ -53,7 +55,6 @@ namespace BowlingConsultant.BeginingWork
 
         private async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Получено сообщение");
             if (update != null && update.Type != UpdateType.Message)
                 return;
 

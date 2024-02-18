@@ -112,7 +112,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BotActivator\BotActivator.cs" />
+    <Compile Include="BotActivator\BotWorker.cs" />
     <Compile Include="CommandManager\BotCommands.cs" />
     <Compile Include="CommandManager\MessageReceiver.cs" />
     <Compile Include="CommandManager\ReplySender.cs" />
