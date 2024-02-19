@@ -1,6 +1,4 @@
-﻿using BowlingConsultant.CommandManager;
-using BowlingConsultant.Configuration;
-using BowlingConsultant.BotWorker;
+﻿using BowlingConsultant.Configuration;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
@@ -19,7 +17,7 @@ namespace BowlingConsultant
 
             Configurathion.SetProperities(config);
 
-            var activator = new BotWorker.BotWorker();
+            var activator = new BotWorker();
             activator.Start();
 
             var me = await activator.BotClient.GetMeAsync();

@@ -8,7 +8,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 
 
-namespace BowlingConsultant.CommandManager
+namespace BowlingConsultant
 {
     public class ReplySender
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
-namespace BowlingConsultant.CommandManager
+namespace BowlingConsultant
 {
     public interface ICommand
     {

@@ -112,10 +112,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BotActivator\BotWorker.cs" />
+    <Compile Include="BotWorker\BotWorker.cs" />
     <Compile Include="CommandManager\BotCommands.cs" />
     <Compile Include="CommandManager\MessageReceiver.cs" />
-    <Compile Include="CommandManager\ReplySender.cs" />
+    <Compile Include="ReplySender\ReplySender.cs" />
     <Compile Include="Configuration\Configuration.cs" />
     <Compile Include="Configuration\TelegramSettings.cs" />
     <Compile Include="Program.cs" />

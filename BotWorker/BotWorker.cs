@@ -1,5 +1,4 @@
-﻿using BowlingConsultant.CommandManager;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -8,7 +7,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Polling;
 using BowlingConsultant.Configuration;
 
-namespace BowlingConsultant.BotWorker
+namespace BowlingConsultant
 {
     public class BotWorker
     {
