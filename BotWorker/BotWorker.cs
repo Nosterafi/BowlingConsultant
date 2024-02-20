@@ -23,6 +23,8 @@ namespace BowlingConsultant
 
         private ReceiverOptions _receiverOptions;
 
+        private CommentCreater _commentCreater;
+
         public BotWorker()
         {
             _botToken = Configurathion.TelegramSettings.BotToken;
@@ -34,9 +36,12 @@ namespace BowlingConsultant
 
             _messageReceiver = new MessageReceiver();
             _replySender = new ReplySender(BotClient);
+            _commentCreater = new CommentCreater(BotClient);
             _messageReceiver.SetCommand("/start", new StartCommand(_replySender));
             _messageReceiver.SetCommand("Меню", new MenuCommand(_replySender));
             _messageReceiver.SetCommand("Контакты", new ContactsCommand(_replySender));
+            _messageReceiver.SetCommand("Написать отзыв", new FillCommentCommand(_commentCreater));
+            _messageReceiver.SetCommand("Отмена", new CanselCommentCommand(_commentCreater));
             _messageReceiver.SetCommand("Непредусмотренная команда", new InvalidCommand(_replySender));
 
             _receiverOptions = new ReceiverOptions
@@ -58,7 +63,11 @@ namespace BowlingConsultant
                 return;
 
             var message = update.Message;
-            await _messageReceiver.SendAnswer(message.Text, message.Chat);
+
+            if(_commentCreater.Stage == FillingStages.NotStart)
+                await _messageReceiver.SendAnswer(message.Text, message.Chat);
+            else
+                await _messageReceiver.FillComment(message.Text, message.Chat);
         }
 
         private static Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)

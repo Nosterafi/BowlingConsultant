@@ -39,5 +39,11 @@ namespace BowlingConsultant
             await BotClient.SendTextMessageAsync(chat, "К сожалению с этим я не могу помочь. " +
                 "Проверьте правильность написания команды или обратитесь в службу поддержки.");
         }
+
+        public async Task SensUnfinishedCommentMessage(Chat chat)
+        {
+            await BotClient.SendTextMessageAsync(chat, "Вы уже начали писать отзыв. " +
+                "Пожалуйста закончите его или отмените подачу командой \"Отмена\".");
+        }
     }
 }

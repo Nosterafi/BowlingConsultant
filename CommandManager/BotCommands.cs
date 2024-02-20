@@ -9,56 +9,88 @@ namespace BowlingConsultant
 {
     public interface ICommand
     {
-        public Task Execute(Chat chat);
+        public Task Execute(Chat chat, string messageText);
     }
 
-    public abstract class Command
+    public abstract class ReplySenderCommand
     {
         protected ReplySender Invocker { get; set; }
 
-        public Command(ReplySender invocker)
+        public ReplySenderCommand(ReplySender invocker)
         {
             Invocker = invocker;
         }
     }
 
-    public class StartCommand : Command, ICommand
+    public abstract class CommentCreaterCommand
+    {
+        protected CommentCreater Invocker { get; set; }
+
+        public CommentCreaterCommand(CommentCreater invocker)
+        {
+            Invocker = invocker;
+        }
+    }
+    
+    public class StartCommand : ReplySenderCommand, ICommand
     {
         public StartCommand(ReplySender invocker) : base(invocker) { }
 
-        public async Task Execute(Chat chat)
+        public async Task Execute(Chat chat, string messageText)
         {
             await Invocker.SendStart(chat);
         }
     }
 
-    public class MenuCommand : Command, ICommand
+    public class MenuCommand : ReplySenderCommand, ICommand
     {
         public MenuCommand(ReplySender invocker) : base(invocker) { }
 
-        public async Task Execute(Chat chat)
+        public async Task Execute(Chat chat, string messageText)
         {
             await Invocker.SendMenu(chat);
         }
     }
 
-    public class ContactsCommand : Command, ICommand
+    public class ContactsCommand : ReplySenderCommand, ICommand
     {
         public ContactsCommand(ReplySender invocker) : base(invocker) { }
 
-        public async Task Execute(Chat chat)
+        public async Task Execute(Chat chat, string messageText)
         {
             await Invocker.SendContacts(chat);
         }
     }
 
-    public class InvalidCommand : Command, ICommand
+    public class InvalidCommand : ReplySenderCommand, ICommand
     {
         public InvalidCommand(ReplySender invocker) : base(invocker) { }
 
-        public async Task Execute(Chat chat)
+        public async Task Execute(Chat chat, string messageText)
         {
             await Invocker.SendUnintendedMessage(chat);
         }
     }
+
+    public class FillCommentCommand : CommentCreaterCommand, ICommand
+    {
+        public FillCommentCommand(CommentCreater invocker) : base(invocker) { }
+
+        public async Task Execute(Chat chat, string messageText)
+        {
+            Invocker.FillComment(chat, messageText);
+        }
+    }
+
+    public class CanselCommentCommand : CommentCreaterCommand, ICommand
+    {
+        public CanselCommentCommand(CommentCreater invocker) : base(invocker) { }
+
+        public async Task Execute(Chat chat, string messageText)
+        {
+            Invocker.Cansel(chat);
+        }
+    }
+
+
 }

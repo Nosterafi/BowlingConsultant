@@ -22,9 +22,20 @@ namespace BowlingConsultant
         public async Task SendAnswer(string messageText, Chat chat)
         {
             if(Commands.ContainsKey(messageText))
-                await Commands[messageText].Execute(chat);
+                await Commands[messageText].Execute(chat, messageText);
 
-            else await Commands["Непредусмотренная команда"].Execute(chat);
+            else await Commands["Непредусмотренная команда"].Execute(chat, messageText);
+        }
+
+        public async Task FillComment(string messageText, Chat chat)
+        {
+            if (messageText.Equals("Отмена"))
+            {
+                Commands["Отмена"].Execute(chat, messageText);
+                return;
+            }
+
+            await Commands["Написать отзыв"].Execute(chat, messageText);
         }
     }
 }
