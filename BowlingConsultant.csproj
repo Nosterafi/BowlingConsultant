@@ -112,11 +112,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Answers.cs" />
+    <Compile Include="BotWorker\BotWorker.cs" />
+    <Compile Include="CommandManager\BotCommands.cs" />
+    <Compile Include="CommandManager\MessageReceiver.cs" />
+    <Compile Include="CommentCreater\CommentCreater.cs" />
+    <Compile Include="ReplySender\ReplySender.cs" />
     <Compile Include="Configuration\Configuration.cs" />
     <Compile Include="Configuration\TelegramSettings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CommentCreater\Comment.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -125,5 +130,6 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
