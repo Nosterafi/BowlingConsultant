@@ -11,50 +11,50 @@ namespace BowlingConsultant
 {
     public class BotWorker
     {
-        private readonly string _botToken;
+        private readonly string botToken;
 
         public readonly ITelegramBotClient BotClient;
 
-        private  MessageReceiver _messageReceiver;
+        private  MessageReceiver messageReceiver;
 
-        private  ReplySender _replySender;
+        private  ReplySender replySender;
 
-        private  CancellationTokenSource _cts;
+        private  CancellationTokenSource cts;
 
-        private ReceiverOptions _receiverOptions;
+        private ReceiverOptions receiverOptions;
 
-        private CommentCreater _commentCreater;
+        private CommentCreater commentCreater;
 
         public BotWorker()
         {
-            _botToken = Configurathion.TelegramSettings.BotToken;
+            botToken = Configurathion.TelegramSettings.BotToken;
 
-            if(_botToken == null && _botToken == string.Empty)
+            if(botToken == null && botToken == string.Empty)
                 throw new NullReferenceException("Invalid token");
 
-            BotClient = new TelegramBotClient(_botToken);
+            BotClient = new TelegramBotClient(botToken);
 
-            _messageReceiver = new MessageReceiver();
-            _replySender = new ReplySender(BotClient);
-            _commentCreater = new CommentCreater(BotClient);
-            _messageReceiver.SetCommand("/start", new StartCommand(_replySender));
-            _messageReceiver.SetCommand("Меню", new MenuCommand(_replySender));
-            _messageReceiver.SetCommand("Контакты", new ContactsCommand(_replySender));
-            _messageReceiver.SetCommand("Написать отзыв", new FillCommentCommand(_commentCreater));
-            _messageReceiver.SetCommand("Отмена", new CanselCommentCommand(_commentCreater));
-            _messageReceiver.SetCommand("Непредусмотренная команда", new InvalidCommand(_replySender));
+            messageReceiver = new MessageReceiver();
+            replySender = new ReplySender(BotClient);
+            commentCreater = new CommentCreater(BotClient);
+            messageReceiver.SetCommand("/start", new StartCommand(replySender));
+            messageReceiver.SetCommand("Меню", new MenuCommand(replySender));
+            messageReceiver.SetCommand("Контакты", new ContactsCommand(replySender));
+            messageReceiver.SetCommand("Написать отзыв", new NewCommentCommand(commentCreater));
+            messageReceiver.SetCommand("Заполнить отзыв", new FillCommentCommand(commentCreater));
+            messageReceiver.SetCommand("Отмена", new CanselCommentCommand(commentCreater));
 
-            _receiverOptions = new ReceiverOptions
+            receiverOptions = new ReceiverOptions
             {
                 AllowedUpdates = { },
                 ThrowPendingUpdates = true,
             };
-            _cts = new CancellationTokenSource();
+            cts = new CancellationTokenSource();
         }
 
         public void Start()
         {
-            BotClient.StartReceiving(UpdateHandler, ErrorHandler, _receiverOptions, _cts.Token);
+            BotClient.StartReceiving(UpdateHandler, ErrorHandler, receiverOptions, cts.Token);
         }
 
         private async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
@@ -64,10 +64,7 @@ namespace BowlingConsultant
 
             var message = update.Message;
 
-            if(_commentCreater.Stage == FillingStages.NotStart)
-                await _messageReceiver.SendAnswer(message.Text, message.Chat);
-            else
-                await _messageReceiver.FillComment(message.Text, message.Chat);
+            await messageReceiver.SendAnswer(message.Text, message.Chat);
         }
 
         private static Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)

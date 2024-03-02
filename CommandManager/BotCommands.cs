@@ -62,13 +62,13 @@ namespace BowlingConsultant
         }
     }
 
-    public class InvalidCommand : ReplySenderCommand, ICommand
+    public class NewCommentCommand : CommentCreaterCommand, ICommand
     {
-        public InvalidCommand(ReplySender invocker) : base(invocker) { }
+        public NewCommentCommand(CommentCreater invocker) : base(invocker) { }
 
         public async Task Execute(Chat chat, string messageText)
         {
-            await Invocker.SendUnintendedMessage(chat);
+            await Invocker.StartFilling(chat);
         }
     }
 
@@ -78,7 +78,7 @@ namespace BowlingConsultant
 
         public async Task Execute(Chat chat, string messageText)
         {
-            Invocker.FillComment(chat, messageText);
+            await Invocker.FillComment(chat, messageText);
         }
     }
 
@@ -88,7 +88,7 @@ namespace BowlingConsultant
 
         public async Task Execute(Chat chat, string messageText)
         {
-            Invocker.Cansel(chat);
+            await Invocker.Cansel(chat);
         }
     }
 

@@ -10,81 +10,119 @@ namespace BowlingConsultant
 {
     public class CommentCreater
     {
-        private readonly ITelegramBotClient _botClient;
+        private readonly ITelegramBotClient botClient;
 
-        private Comment _actualComment {  get; set; }
+        private Comment actualComment {  get; set; }
 
         public FillingStages Stage { get; private set; }
 
         public CommentCreater(ITelegramBotClient botClient)
         {
             Stage = FillingStages.NotStart;
-            _botClient = botClient;
+            this.botClient = botClient;
         }
 
         public async Task FillComment(Chat chat, string messageText)
         {
-            if(Stage == FillingStages.NotStart)
-            {
-                _actualComment = new Comment();
-                Stage = FillingStages.Name;
 
-                await _botClient.SendTextMessageAsync(chat, "Мы рады, что вы решили оставить отзыв о нас. " +
-                    "Отменить отправку можно С помощью команды \"Отмена\".");
-                await _botClient.SendTextMessageAsync(chat, "Введите своё имя.");
+            if (Stage == FillingStages.Name) 
+            {
+                await FillName(chat, messageText);
+
+                return;
             }
 
-            else if(Stage == FillingStages.Name) 
+            if(Stage == FillingStages.Surname)
             {
-                _actualComment.Name = messageText;
-                Stage = FillingStages.Surname;
-
-                await _botClient.SendTextMessageAsync(chat, "Теперь введите фамилию.");
+                await FillSurname(chat, messageText);
+                
+                return;
             }
 
-            else if(Stage == FillingStages.Surname)
+            if(Stage == FillingStages.PhoneNumber) 
             {
-                _actualComment.Surname = messageText;
-                Stage = FillingStages.PhoneNumber;
+                await FillPhoneNumber(chat, messageText);
 
-                await _botClient.SendTextMessageAsync(chat, "Для обратной связи нам" +
-                    " нужно знать ваш номер телефона. Пожалуйста введите его.");
+                return;
             }
 
-            else if(Stage == FillingStages.PhoneNumber) 
-            {
-                try
-                {
-                    _actualComment.PhoneNumber = messageText;
-                    Stage = FillingStages.CommentText;
+            if(Stage == FillingStages.CommentText)
+            { 
+                await FillCommentText(chat, messageText);
 
-                    await _botClient.SendTextMessageAsync(chat, "Напишите свой отзыв о нашем боулинг-центре.");
-                }
-                catch (ArgumentException e)
-                {
-                    await _botClient.SendTextMessageAsync(chat, "Вы ввели несуществующий номер телефона. " +
-                        "Пожалуйста, введите ваш реальный.");
-                }
+                return;
+            }
+        }
+
+        public async Task StartFilling(Chat chat)
+        {
+            if(Stage != FillingStages.NotStart)
+            {
+                await botClient.SendTextMessageAsync(chat, "Вы уже начали писать отзыв." +
+                    " Вы можете закончить его или же начать сначала с помощью комманды \"Отмена\".");
+
+                return;
             }
 
-            else if(Stage == FillingStages.CommentText)
+            actualComment = new Comment();
+            Stage = FillingStages.Name;
+
+            await botClient.SendTextMessageAsync(chat, "Мы рады, что вы решили оставить отзыв о нас. " +
+              "Отменить отправку можно c помощью команды \"Отмена\".");
+            await botClient.SendTextMessageAsync(chat, "Введите своё имя.");
+        }
+
+        private async Task FillName(Chat chat, string name)
+        {
+            actualComment.Name = name;
+            Stage = FillingStages.Surname;
+
+            await botClient.SendTextMessageAsync(chat, "Теперь введите фамилию.");
+        }
+
+        private async Task FillSurname(Chat chat, string surname)
+        {
+            actualComment.Surname = surname;
+            Stage = FillingStages.PhoneNumber;
+
+            await botClient.SendTextMessageAsync(chat, "Для обратной связи нам" +
+                " нужно знать ваш номер телефона. Пожалуйста введите его.");
+        }
+
+        private async Task FillPhoneNumber(Chat chat, string phoneNumber)
+        {
+            try
             {
-                _actualComment.CommentText = messageText;
-                Stage = FillingStages.NotStart;
+                actualComment.PhoneNumber = phoneNumber;
+                Stage = FillingStages.CommentText;
 
-                _actualComment.SendComment();
-                _actualComment = null;
+                await botClient.SendTextMessageAsync(chat, "Напишите свой отзыв о нашем боулинг-центре.");
 
-                await _botClient.SendTextMessageAsync(chat, "Отзыв успешно сохранён. Спасибо, что поделились своим мнением.");
+                return;
             }
+            catch (ArgumentException e)
+            {
+                await botClient.SendTextMessageAsync(chat, "Вы ввели несуществующий номер телефона. " +
+                    "Пожалуйста, введите ваш реальный.");
+            }
+        }
+
+        private async Task FillCommentText(Chat chat, string commentText)
+        {
+            actualComment.CommentText = commentText;
+            Stage = FillingStages.NotStart;
+
+            actualComment = null;
+
+            await botClient.SendTextMessageAsync(chat, "Отзыв успешно сохранён. Спасибо, что поделились своим мнением.");
         }
 
         public async Task Cansel(Chat chat)
         {
-            _actualComment = null;
+            actualComment = null;
             Stage = FillingStages.NotStart;
 
-            await _botClient.SendTextMessageAsync(chat, "Вы отменили отправку отзыва. " +
+            await botClient.SendTextMessageAsync(chat, "Вы отменили отправку отзыва. " +
                 "Если хотите начать заново, введите \"Написать отзыв\".");
         }
     }
